@@ -1,0 +1,4 @@
+/home/mice/TinyProject/build/CMakeFiles/rebuild_cache.dir
+/home/mice/TinyProject/build/CMakeFiles/MLIB.dir
+/home/mice/TinyProject/build/CMakeFiles/edit_cache.dir
+/home/mice/TinyProject/build/CMakeFiles/main.dir

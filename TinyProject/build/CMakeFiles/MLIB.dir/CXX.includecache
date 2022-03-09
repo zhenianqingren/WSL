@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/Person.h
+stdio.h
+-
+
+/home/mice/TinyProject/operation/Call.cpp
+Person.h
+/home/mice/TinyProject/operation/Person.h
+
+/home/mice/TinyProject/operation/ShowInfo.cpp
+Person.h
+/home/mice/TinyProject/operation/Person.h
+

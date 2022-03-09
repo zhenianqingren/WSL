@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/main.dir/main.cpp.o CMakeFiles/main.dir/src/Army.cpp.o CMakeFiles/main.dir/src/Business.cpp.o CMakeFiles/main.dir/src/Person.cpp.o CMakeFiles/main.dir/src/Politician.cpp.o  -o ../bin/main  -L/home/mice/TinyProject/lib 
