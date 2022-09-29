@@ -51,3 +51,8 @@
 51$(gdb)run argv[1] argv[2]          # 调试时命令行传参
 52
 53$(gdb)set follow-fork-mode child   # Makefile项目管理：选择跟踪父子进程（fork()）
+54$(gdb)layout next #切换到下一个布局模式
+55$(gdb)layout prev #切换到上一个布局模式
+56$(gdb)layout src #只显示源码
+57$(gdb)layout asm #只显示汇编代码
+58$(gdb)layout split #显示汇编代码和源代码

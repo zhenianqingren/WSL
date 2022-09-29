@@ -118,3 +118,12 @@
 12
 13// 1. 在编译的时候，使用gcc -DDEBUG main.cpp
 14// 2. 第七行代码可以被执行
+
+static:gcc/g++ -c lib.c -I./  dynamic:gcc/g++ -shared -fpic lib.c
+ar -cr lib.a lib.o
+cp lib.h /usr/local/include/
+cp lib.a /usr/local/lib/
+
+动态库还要在 /etc/ld.so.conf 下添加动态库路径
+之后执行/sbin/ldconfig
+注意库名一定要是libxxx.a 或者libxxx.so

@@ -1,0 +1,5 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/home/mice/MakeFile'
+g++ src/add.cpp src/main.cpp -o build/add.o
+make: Leaving directory '/home/mice/MakeFile'
+ 
