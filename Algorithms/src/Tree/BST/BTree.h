@@ -2,12 +2,12 @@
 #include <algorithm>
 
 template <typename T>
-class BTree //水平方向对应的是RAM内存操作 垂直方向对应的是外存IO操作
+class BTree //姘村钩鏂瑰悜瀵瑰簲鐨勬槸RAM鍐呭瓨鎿嶄綔 鍨傜洿鏂瑰悜瀵瑰簲鐨勬槸澶栧瓨IO鎿嶄綔
 {
 protected:
-    int _size;  //关键码总数
-    int _order; //阶次 树根为0 一直到外部节点而非叶子节点的高度 (外部节点可能链接其他B树 此处关注一处局部)
-    //最大高度与最小高度详见教材
+    int _size;  //鍏抽敭鐮佹€绘暟
+    int _order; //闃舵 鏍戞牴涓�0 涓€鐩村埌澶栭儴鑺傜偣鑰岄潪鍙跺瓙鑺傜偣鐨勯珮搴� (澶栭儴鑺傜偣鍙兘閾炬帴鍏朵粬B鏍� 姝ゅ鍏虫敞涓€澶勫眬閮�)
+    //鏈€澶ч珮搴︿笌鏈€灏忛珮搴﹁瑙佹暀鏉�
     BTNodePosi(T) _root;
     BTNodePosi(T) _hot;
     void solveOverflow(BTNodePosi(T));
@@ -20,10 +20,10 @@ public:
 };
 
 template <typename T>
-static int k_search(const vector<T> &v, const T &e) //鉴于内外存的差异 采用二分查找的效率优化效果微乎其微 甚至可能负优化
+static int k_search(const vector<T> &v, const T &e) //閴翠簬鍐呭瀛樼殑宸紓 閲囩敤浜屽垎鏌ユ壘鐨勬晥鐜囦紭鍖栨晥鏋滃井涔庡叾寰� 鐢氳嚦鍙兘璐熶紭鍖�
 {
-    //个人猜想:IO操作(中断或DMA方式 如果对于某个节点(对应一个页) 查询速度过快可能要等待中断查询)
-    //(每一次微操作后会进行中断查询)
+    //涓汉鐚滄兂:IO鎿嶄綔(涓柇鎴朌MA鏂瑰紡 濡傛灉瀵逛簬鏌愪釜鑺傜偣(瀵瑰簲涓€涓〉) 鏌ヨ閫熷害杩囧揩鍙兘瑕佺瓑寰呬腑鏂煡璇�)
+    //(姣忎竴娆″井鎿嶄綔鍚庝細杩涜涓柇鏌ヨ)
     int pos;
     for (pos = 0; pos < v.size(); ++pos)
     {
@@ -66,8 +66,8 @@ bool BTree<T>::insert(const T &e)
     return true;
 }
 
-//此处中位数亦称中值 在向量中就是秩居中的元素 例如对于vec size=n
-// the middle value -> vec[n/2(下确界)]
+//姝ゅ涓綅鏁颁害绉颁腑鍊� 鍦ㄥ悜閲忎腑灏辨槸绉╁眳涓殑鍏冪礌 渚嬪瀵逛簬vec size=n
+// the middle value -> vec[n/2(涓嬬‘鐣�)]
 
 template <typename T>
 void BTree<T>::solveOverflow(BTNodePosi(T) v)
@@ -84,7 +84,7 @@ void BTree<T>::solveOverflow(BTNodePosi(T) v)
     v->key.resize(s + 1);
     v->child.resize(s + 1);
 
-    if (u->child[0]) //插入操作总是在最底层 之后逐渐向上 因此若第一个child不为nullptr 那么必然不是叶子节点 那么必然它的每个孩子都存在
+    if (u->child[0]) //鎻掑叆鎿嶄綔鎬绘槸鍦ㄦ渶搴曞眰 涔嬪悗閫愭笎鍚戜笂 鍥犳鑻ョ涓€涓猚hild涓嶄负nullptr 閭ｄ箞蹇呯劧涓嶆槸鍙跺瓙鑺傜偣 閭ｄ箞蹇呯劧瀹冪殑姣忎釜瀛╁瓙閮藉瓨鍦�
         std::for_each(u->child.begin(), u->child.end(), [=](BTNodePosi(T) & e)
                       { e->parent = u; });
 
@@ -133,23 +133,23 @@ void BTree<T>::solveUnderflow(BTNodePosi(T) v)
     if (((_order - 1) >> 1) <= v->key.size())
         return;
     BTNodePosi(T) p = v->parent;
-    if (!p) //递归基 已到根节点而没有子节点的下限
+    if (!p) //閫掑綊鍩� 宸插埌鏍硅妭鐐硅€屾病鏈夊瓙鑺傜偣鐨勪笅闄�
     {
         if (!v->key.size() && v->child[0])
         {
-            _root = v->child[0]; //倘若树根v已不含关键码 却又唯一的非空子节点
+            _root = v->child[0]; //鍊樿嫢鏍戞牴v宸蹭笉鍚叧閿爜 鍗村張鍞竴鐨勯潪绌哄瓙鑺傜偣
             _root->parent = nullptr;
             v->child[0] = nullptr;
             delete v;
-        } //如果为非空的情况 那么也是允许的(作为根节点)
+        } //濡傛灉涓洪潪绌虹殑鎯呭喌 閭ｄ箞涔熸槸鍏佽鐨�(浣滀负鏍硅妭鐐�)
         return;
     }
     int rank = 0;
     while (p->child[rank] != v)
         ++rank;
-    if (rank > 0) //如果r不是v的第一个孩子
+    if (rank > 0) //濡傛灉r涓嶆槸v鐨勭涓€涓瀛�
     {
-        BTNodePosi(T) ls = p->child[rank - 1]; //从左兄弟处借
+        BTNodePosi(T) ls = p->child[rank - 1]; //浠庡乏鍏勫紵澶勫€�
         if (ls->key.size() > ((_order - 1) >> 1))
         {
             v->key.insert(0, p->key[rank - 1]);
@@ -162,7 +162,7 @@ void BTree<T>::solveUnderflow(BTNodePosi(T) v)
             return;
         }
     }
-    if (rank != p->child.size() - 1) //如果左兄弟数量不足或者没有左兄弟节点
+    if (rank != p->child.size() - 1) //濡傛灉宸﹀厔寮熸暟閲忎笉瓒虫垨鑰呮病鏈夊乏鍏勫紵鑺傜偣
     {
         BTNodePosi(T) rs = p->child[rank + 1];
         if (rs->key.size() > ((_order - 1) >> 1))
@@ -178,7 +178,7 @@ void BTree<T>::solveUnderflow(BTNodePosi(T) v)
         }
     }
     int offset;
-    if (rank > 0) //左右兄弟都无法相借 尝试合并左兄弟
+    if (rank > 0) //宸﹀彸鍏勫紵閮芥棤娉曠浉鍊� 灏濊瘯鍚堝苟宸﹀厔寮�
     {
         BTNodePosi(T) ls = p->child[rank - 1];
         ls->key.push_back(p->key[rank - 1]);
@@ -191,7 +191,7 @@ void BTree<T>::solveUnderflow(BTNodePosi(T) v)
         std::copy(v->child.begin(), v->child.end(), ls->child.begin() + offset);
         delete v;
     }
-    else //但是v是第一个孩子节点 于是只能合并右兄弟
+    else //浣嗘槸v鏄涓€涓瀛愯妭鐐� 浜庢槸鍙兘鍚堝苟鍙冲厔寮�
     {
         BTNodePosi(T) rs = p->child[rank + 1];
         v->key.push_back(p->key[rank]);

@@ -7,7 +7,8 @@
                 "-g",
                 "${file}",
                 "-o",
-                "/home/mice/Algorithms/bin/${fileBasenameNoExtension}"
+                "/home/mice/repository/WSL/Algorithms/bin/${fileBasenameNoExtension}",
+                "-Wall"
             ],
             "problemMatcher": {
                 "owner": "cpp",

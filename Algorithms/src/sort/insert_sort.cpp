@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <iostream>
 #include <vector>
 #include <random>
 using namespace std;
@@ -12,20 +12,32 @@ void insert_sort(vector<int> &v)
         for (j = i; j > 0 && cur < v[j - 1]; --j)
             v[j] = v[j - 1];
         v[j] = cur;
+
+        if (i <= 2)
+        {
+            for (int k = 0; k < v.size(); ++k)
+            {
+                cout << v[k];
+                if (k != v.size() - 1)
+                    cout << " ";
+            }
+            cout << "\n";
+        }
     }
 }
 
 int main(int argc, char const *argv[])
 {
-    vector<int> test_case;
-    for (int i = 0; i < 15; i++)
-        test_case.push_back(rand() % 60);
-    for (int e : test_case)
-        printf("%d ", e);
-    printf("\n");
+    int n;
+    cin >> n;
+    vector<int> test_case(n);
+    for (int i = 0; i < n; ++i)
+        cin >> test_case[i];
     insert_sort(test_case);
-    for (int e : test_case)
-        printf("%d ", e);
-    printf("\n");
-    return 0;
+    for (int k = 0; k < test_case.size(); ++k)
+    {
+        cout << test_case[k];
+        if (k != test_case.size() - 1)
+            cout << " ";
+    }
 }

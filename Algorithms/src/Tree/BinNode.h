@@ -17,7 +17,7 @@
     IsLChild(*((x)->parent)) ? (x)->parent->parent->rChild : (x)->parent->parent->lChild) //叔叔
 
 #define FromParentTo(x) ( \
-    IsRoot(x) ? _root : (IsLChild(x) ? (x).parent->lChild : (x).parent->rChild)) //来自父亲的指针 可以改变父亲的某个指针的指向
+    IsRoot(x) ? (this->_root) : (IsLChild(x) ? (x).parent->lChild : (x).parent->rChild)) //来自父亲的指针 可以改变父亲的某个指针的指向
 #define max(x, y) x > y ? x : y
 #include <stack>
 #include <queue>

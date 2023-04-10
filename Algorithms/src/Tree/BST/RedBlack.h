@@ -50,8 +50,8 @@ void RedBlack<T>::solveDoubleRed(BinNodePosi(T) x)
 {
     if (IsRoot(*x)) //若已递归至树根 则将其转黑 整树黑高度也随之增加
     {
-        _root->color = RB_BLACK;
-        ++_root->height;
+        (this->_root)->color = RB_BLACK;
+        ++(this->_root->height);
         return;
     }
 
@@ -92,14 +92,14 @@ bool RedBlack<T>::remove(const T &e)
     BinNodePosi(T) r = removeAt(x, this->_hot);//此处之后关注的是r的局部而不是x 注意不要混淆
     if (--this->_size <= 0)
         return true;
-    if (!_hot)
+    if (!(this->_hot))
     {
         this->_root->color = RB_BLACK;
         updateHeight(this->_root);
         return true;
     }
 
-    if (BlackHeightUpdated(*(_hot)))
+    if (BlackHeightUpdated(*((this->_hot))))
         return true;
     if (IsRed(r)) //说明实际被删的是黑色w(详见removeAt) 高度减少后再将r染回来即可
     {
@@ -116,7 +116,7 @@ bool RedBlack<T>::remove(const T &e)
 template <typename T>
 void RedBlack<T>::solveDoubleBlack(BinNodePosi(T) r)
 {
-    BinNodePosi(T) p = r ? r->parent : _hot;
+    BinNodePosi(T) p = r ? r->parent : (this->_hot);
     if (!p)
         return;
     BinNodePosi(T) s = (r == p->lChild) ? p->rChild : p->lChild;
@@ -157,7 +157,7 @@ void RedBlack<T>::solveDoubleBlack(BinNodePosi(T) r)
     {
         s->color = RB_BLACK;
         p->color = RB_RED;
-        _hot = p;
+        (this->_hot) = p;
         BinNodePosi(T) t = IsLChild(*s) ? s->lChild : s->rChild;
         FromParentTo(*p) = rotateAt(t);
         solveDoubleBlack(r);

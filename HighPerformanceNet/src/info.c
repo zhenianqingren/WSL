@@ -5,18 +5,70 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <errno.h>
 #include <arpa/inet.h>
 
 #define size 64
 
+void pfamily(struct addrinfo *aip)
+{
+    printf(" family : ");
+    switch (aip->ai_family)
+    {
+    case AF_INET:
+        printf(" inet ");
+        break;
+    case AF_INET6:
+        printf(" inet6 ");
+        break;
+    case AF_UNIX:
+        printf(" unix ");
+        break;
+    case AF_UNSPEC:
+        printf(" unspecified ");
+        break;
+    default:
+        printf(" unknown ");
+    }
+}
+
+void pprotocol(struct addrinfo *aip)
+{
+    printf(" protocol : ");
+    switch (aip->ai_protocol)
+    {
+    case 0:
+        printf("default");
+        break;
+    case IPPROTO_TCP:
+        printf(" TCP ");
+        break;
+    case IPPROTO_UDP:
+        printf(" UDP ");
+        break;
+    case IPPROTO_RAW:
+        printf(" RAW ");
+        break;
+    default:
+        printf(" unknown (%d) ", aip->ai_protocol);
+    }
+}
+
 int main(int argc, char const *argv[])
 {
-    struct addrinfo hints;
-    struct addrinfo *res;
+    struct addrinfo hint;
+    struct addrinfo *ailist, *aip;
 
-    bzero(&hints, sizeof(hints));
-    hints.ai_socktype = SOCK_STREAM;
-    int ret = getaddrinfo("mice", "ssh", &hints, &res);
+    struct sockaddr_in *sinp;
+    const char *addr;
+
+    char abuf[INET_ADDRSTRLEN];
+
+    bzero(&hint, sizeof(hint));
+    hint.ai_socktype = SOCK_DGRAM;
+    int ret = getaddrinfo("mice", "openvpn", &hint, &ailist);
+    // 此函数返回的ip地址为127.0.1.1 是一个回环地址 到了传输层不再往下发
+    // 根本无法监听对应的端口 192.168.80.128才是面向外部连接的ip地址
     if (ret != 0)
     {
         switch (ret)
@@ -57,28 +109,28 @@ int main(int argc, char const *argv[])
         return 1;
     }
 
-    switch (hints.ai_family)
+    struct servent *sername;
+
+    for (aip = ailist; aip != NULL; aip = aip->ai_next)
     {
-    case AF_INET:
-        printf("IPv4 family\n");
-        break;
-    case AF_INET6:
-        printf("IPv6 family\n");
-        break;
-    case AF_UNSPEC:
-        printf("Both IPV4 And IPv6\n");
-    default:
-        break;
+        pfamily(aip);
+        pprotocol(aip);
+        printf("\n\thost %s", aip->ai_canonname ? aip->ai_canonname : "-");
+
+        if (aip->ai_family == AF_INET)
+        {
+            sinp = (struct sockaddr_in *)aip->ai_addr;
+            addr = inet_ntop(AF_INET, &sinp->sin_addr, abuf, INET_ADDRSTRLEN);
+            printf(" address %s", addr ? addr : "unknown");
+            printf(" port %d", ntohs(sinp->sin_port));
+            printf("\n\n");
+
+            sername = getservbyport(ntohs(sinp->sin_port), NULL);
+            if (sername != NULL)
+                printf("service name: %s\n", sername->s_name);
+        }
     }
+    printf("%s\n", strerror(0));
 
-    printf("%s\n", hints.ai_canonname);
-
-    struct sockaddr_in *address_pointer = (struct sockaddr_in *)hints.ai_addr;
-    struct sockaddr_in address = *address_pointer;
-    int port = ntohs(address.sin_port);
-    char ip[size];
-    inet_ntop(hints.ai_family, &address.sin_addr, ip, size);
-    printf("%s\n", ip);
-    freeaddrinfo(&hints);
     return 0;
 }

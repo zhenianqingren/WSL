@@ -5,7 +5,7 @@
             "name": "C/C++",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/home/mice/Algorithms/bin/${fileBasenameNoExtension}",
+            "program": "/home/mice/repository/WSL/Algorithms/bin/${fileBasenameNoExtension}",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

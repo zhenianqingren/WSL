@@ -45,6 +45,11 @@
         "typeinfo": "cpp",
         "socket.h": "c",
         "unistd.h": "c",
-        "libgen.h": "c"
+        "libgen.h": "c",
+        "netdb.h": "c",
+        "epoll.h": "c",
+        "inet.h": "c",
+        "fcntl.h": "c",
+        "fcntl-linux.h": "c"
     }
 }
